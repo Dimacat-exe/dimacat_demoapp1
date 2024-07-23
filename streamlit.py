@@ -48,7 +48,7 @@ if uploaded_video:
     st.write('Analyzing the video...')
     try:
         video_bytes = uploaded_video.read()
-        video = cv2.VideoCapture(BytesIO(video_bytes).read())
+        video = cv2.VideoCapture(str(BytesIO(video_bytes).read()), cv2.CAP_ANY)
         frame_count = 0
         fps = video.get(cv2.CAP_PROP_FPS)
         width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
