@@ -2,3 +2,4 @@ opencv-python
 torch
 yolov10/.
 huggingface_hub
+gdown
