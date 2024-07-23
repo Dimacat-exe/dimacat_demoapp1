@@ -5,11 +5,16 @@ import numpy as np
 from io import BytesIO
 from ultralytics import YOLOv10
 import gdown
-import subprocess
+import requests
 
 url = 'https://github.com/Dimacat-exe/dimacat_demoapp1/releases/download/model/catdetect.pt'
-filename = 'my_catdetect.pt'
-subprocess.run(['wget', '--show-progress', '-O', filename, url])
+filename = 'catdetect.pt'
+
+with requests.get(url, stream=True) as r:
+    r.raise_for_status()
+    with open(filename, 'wb') as f:
+        for chunk in r.iter_content(chunk_size=8192):
+            f.write(chunk)
 
 model = YOLOv10('/mount/src/dimacat_demoapp1/catdetect.pt')
 
