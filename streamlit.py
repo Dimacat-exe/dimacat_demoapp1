@@ -7,14 +7,29 @@ from ultralytics import YOLOv10
 import gdown
 import requests
 
-url = 'https://github.com/Dimacat-exe/dimacat_demoapp1/releases/download/model/catdetect.pt'
-filename = 'catdetect.pt'
 
-with requests.get(url, stream=True) as r:
-    r.raise_for_status()
-    with open(filename, 'wb') as f:
-        for chunk in r.iter_content(chunk_size=8192):
-            f.write(chunk)
+def get_confirm_token(response):
+    for key, value in response.cookies.items():
+        if key.startswith('download_warning'):
+            return value
+    return None
+
+def save_response_content(response, destination):
+    CHUNK_SIZE = 32768
+    with open(destination, "wb") as f:
+        for chunk in response.iter_content(CHUNK_SIZE):
+            if chunk: # filter out keep-alive new chunks
+                f.write(chunk)
+
+def download_file_from_google_drive(id, destination):
+    URL = "https://drive.usercontent.google.com/download?id=1ojdmsPdorikmdlxD0vA71gNJ0929aTXK&export=download"
+    session = requests.Session()
+    response = session.get(URL, params = { 'id' : id }, stream = True)
+    token = get_confirm_token(response)
+    if token:
+        params = { 'id' : id, 'confirm' : token }
+        response = session.get(URL, params = params, stream = True)
+    save_response_content(response, destination) 
 
 model = YOLOv10('/mount/src/dimacat_demoapp1/catdetect.pt')
 
