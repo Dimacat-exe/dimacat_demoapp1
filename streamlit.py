@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 from io import BytesIO
 from ultralytics import YOLOv10
+import gdown
 
 url = "https://drive.usercontent.google.com/download?id=1ojdmsPdorikmdlxD0vA71gNJ0929aTXK&export=download"
 output = "catdetect.pt"
