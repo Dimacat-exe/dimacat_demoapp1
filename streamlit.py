@@ -5,6 +5,9 @@ import numpy as np
 from io import BytesIO
 from ultralytics import YOLOv10
 
+url = "https://drive.usercontent.google.com/download?id=1ojdmsPdorikmdlxD0vA71gNJ0929aTXK&export=download"
+output = "catdetect.pt"
+gdown.download(url, output)
 
 model = YOLOv10('/mount/src/dimacat_demoapp1/catdetect.pt')
 
