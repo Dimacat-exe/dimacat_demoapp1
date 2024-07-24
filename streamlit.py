@@ -6,13 +6,13 @@ from io import BytesIO
 from ultralytics import YOLOv10
 import requests
 
-URL = "https://github.com/Dimacat-exe/dimacat_demoapp1/releases/download/model/catdetect.pt"
-SAVE_AS = "catdetect.pt"
+URL = "https://github.com/Dimacat-exe/dimacat_demoapp1/releases/download/model2/last.pt"
+SAVE_AS = "last.pt"
 resp = requests.get(URL)
 with open(SAVE_AS, "wb") as f: 
     f.write(resp.content)
 
-model = YOLOv10('/mount/src/dimacat_demoapp1/catdetect.pt')
+model = YOLOv10('/mount/src/dimacat_demoapp1/last.pt')
 
 st.set_page_config(
     page_title='Find Cats',
