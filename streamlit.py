@@ -6,8 +6,8 @@ from io import BytesIO
 from ultralytics import YOLOv10
 import requests
 
-URL = "https://github.com/Dimacat-exe/dimacat_demoapp1/releases/download/model2/last.pt"
-SAVE_AS = "last.pt"
+URL = "https://github.com/Dimacat-exe/dimacat_demoapp1/releases/download/model2/best.pt"
+SAVE_AS = "best.pt"
 resp = requests.get(URL)
 with open(SAVE_AS, "wb") as f: 
     f.write(resp.content)
