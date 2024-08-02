@@ -8,7 +8,7 @@ import requests
 import tempfile
 import os
 
-# Download model
+# Download the model
 def download_model(url, save_as):
     resp = requests.get(url)
     with open(save_as, "wb") as f:
@@ -18,7 +18,7 @@ SAVE_AS = "catdt.pt"
 download_model(URL, SAVE_AS)
 model = YOLOv10(SAVE_AS)
 
-# Set up model, YOLO, Streamlit
+# Set up Streamlit
 st.set_page_config(
     page_title='Find Cats',
     initial_sidebar_state='expanded',
@@ -26,15 +26,15 @@ st.set_page_config(
 st.title('Find Cats')
 st.write('Upload your images and videos here')
 
-# Upload pictures or videos
+# File uploaders for images and videos
 uploaded_files = st.file_uploader(
-    'Choose max 200 pictures:', type=['jpg', 'jpeg', 'png'], accept_multiple_files=True
+    'Choose up to 200 images:', type=['jpg', 'jpeg', 'png'], accept_multiple_files=True
 )
 uploaded_videos = st.file_uploader(
-    'Choose max 20 videos:', type=['mp4', 'avi'], accept_multiple_files=True
+    'Choose up to 20 videos:', type=['mp4', 'avi'], accept_multiple_files=True
 )
 
-# Detect cat in pictures
+# Detect cats in uploaded images
 if uploaded_files:
     col1, col2 = st.columns(2)
     for i, uploaded_file in enumerate(uploaded_files):
@@ -49,7 +49,7 @@ if uploaded_files:
                 img_out = Image.fromarray(img_out)
             st.image(img_out, caption=f'Cats in image {i + 1}', use_column_width=True)
 
-# Detect cat in videos
+# Detect cats in uploaded videos
 if uploaded_videos:
     for uploaded_video in uploaded_videos:
         st.write(f'Analyzing video: {uploaded_video.name}...')
