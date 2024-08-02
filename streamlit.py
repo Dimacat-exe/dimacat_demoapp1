@@ -8,7 +8,7 @@ import requests
 import tempfile
 import os
 
-# Download the model
+# Download model
 def download_model(url, save_as):
     resp = requests.get(url)
     with open(save_as, "wb") as f:
