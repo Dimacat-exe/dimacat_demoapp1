@@ -12,7 +12,7 @@ resp = requests.get(URL)
 with open(SAVE_AS, "wb") as f: 
     f.write(resp.content)
 
-model = YOLOv10('/mount/src/dimacat_demoapp1/best.pt')
+model = YOLOv10('/mount/src/dimacat_demoapp1/catdt1.pt')
 
 st.set_page_config(
     page_title='Find Cats',
