@@ -88,14 +88,13 @@ if uploaded_videos:
                                     x1, y1, x2, y2 = box.xyxy[0].numpy().astype('int')
                                     confidence = box.conf[0].numpy().astype('int') * 100
                                     class_detected_name = "Cat"  # Assuming the class name is "Cat"
-
                                     cv2.rectangle(buffered_frame, (x1, y1), (x2, y2), (0, 0, 255), 3)
                                     cv2.putText(buffered_frame, f'{class_detected_name}', (x1 + 8, y1 - 12), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
-
                             frame_out = cv2.cvtColor(buffered_frame, cv2.COLOR_RGB2BGR)
                             out_video.write(frame_out)
                             frame_count += 1
                     buffer_frames = []
+
             for buffered_frame in buffer_frames:
                 with st.spinner(f'Detecting cats in frame {frame_count}...'):
                     results = model(buffered_frame, conf=0.15)
@@ -105,10 +104,8 @@ if uploaded_videos:
                             x1, y1, x2, y2 = box.xyxy[0].numpy().astype('int')
                             confidence = box.conf[0].numpy().astype('int') * 100
                             class_detected_name = "Cat"  # Assuming the class name is "Cat"
-
                             cv2.rectangle(buffered_frame, (x1, y1), (x2, y2), (0, 0, 255), 3)
                             cv2.putText(buffered_frame, f'{class_detected_name}', (x1 + 8, y1 - 12), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
-
                     frame_out = cv2.cvtColor(buffered_frame, cv2.COLOR_RGB2BGR)
                     out_video.write(frame_out)
                     frame_count += 1
