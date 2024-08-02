@@ -13,7 +13,6 @@ def download_model(url, save_as):
     resp = requests.get(url)
     with open(save_as, "wb") as f:
         f.write(resp.content)
-
 URL = "https://github.com/Dimacat-exe/dimacat_demoapp1/releases/download/model3/catdt.pt"
 SAVE_AS = "catdt.pt"
 download_model(URL, SAVE_AS)
@@ -69,9 +68,10 @@ if uploaded_videos:
             height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
             output_file = f'output_video_{uploaded_video.name}'
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as out_temp_video:
-                out_video_path = out_temp_video.name
-            out_video = cv2.VideoWriter(out_video_path, fourcc, fps, (width, height))
+            output_path = os.path.join('output_videos', output_file)
+            if not os.path.exists('output_videos'):
+                os.makedirs('output_videos')
+            out_video = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
             buffer_frames = []
             while True:
                 ret, frame = video.read()
@@ -88,13 +88,14 @@ if uploaded_videos:
                                     x1, y1, x2, y2 = box.xyxy[0].numpy().astype('int')
                                     confidence = box.conf[0].numpy().astype('int') * 100
                                     class_detected_name = "Cat"  # Assuming the class name is "Cat"
+
                                     cv2.rectangle(buffered_frame, (x1, y1), (x2, y2), (0, 0, 255), 3)
                                     cv2.putText(buffered_frame, f'{class_detected_name}', (x1 + 8, y1 - 12), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
+
                             frame_out = cv2.cvtColor(buffered_frame, cv2.COLOR_RGB2BGR)
                             out_video.write(frame_out)
                             frame_count += 1
                     buffer_frames = []
-
             for buffered_frame in buffer_frames:
                 with st.spinner(f'Detecting cats in frame {frame_count}...'):
                     results = model(buffered_frame, conf=0.15)
@@ -103,7 +104,7 @@ if uploaded_videos:
                         for box in parameters:
                             x1, y1, x2, y2 = box.xyxy[0].numpy().astype('int')
                             confidence = box.conf[0].numpy().astype('int') * 100
-                            class_detected_name = "Cat"  # Assuming the class name is "Cat"
+                            class_detected_name = "Cat"
                             cv2.rectangle(buffered_frame, (x1, y1), (x2, y2), (0, 0, 255), 3)
                             cv2.putText(buffered_frame, f'{class_detected_name}', (x1 + 8, y1 - 12), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
                     frame_out = cv2.cvtColor(buffered_frame, cv2.COLOR_RGB2BGR)
@@ -112,9 +113,10 @@ if uploaded_videos:
             video.release()
             out_video.release()
             st.write(f'Done processing video: {uploaded_video.name}')
-            st.video(out_video_path)
+            with open(output_path, 'rb') as video_file:
+                video_bytes = video_file.read()
+                st.video(video_bytes)
             os.remove(temp_video_path)
-            os.remove(out_video_path)
 
         except Exception as e:
             st.write(f"Error processing video {uploaded_video.name}: {e}")
