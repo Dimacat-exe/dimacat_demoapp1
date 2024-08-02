@@ -58,7 +58,6 @@ if uploaded_videos:
             with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as temp_video:
                 temp_video.write(video_bytes)
                 temp_video_path = temp_video.name
-
             video = cv2.VideoCapture(temp_video_path)
             frame_count = 0
             fps = video.get(cv2.CAP_PROP_FPS) if video.get(cv2.CAP_PROP_FPS) > 0 else 30
@@ -66,25 +65,21 @@ if uploaded_videos:
             height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
             output_file = f'output_video_{uploaded_video.name}'
-
             with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as out_temp_video:
                 out_video_path = out_temp_video.name
-
             out_video = cv2.VideoWriter(out_video_path, fourcc, fps, (width, height))
-
             buffer_frames = []
             while True:
                 ret, frame = video.read()
                 if not ret:
                     break
-
                 buffer_frames.append(frame)
                 if len(buffer_frames) >= 10:
                     for buffered_frame in buffer_frames:
                         with st.spinner(f'Detecting cats in frame {frame_count}...'):
                             results = model(buffered_frame, conf=0.15)
                             frame_out = results[0].plot()
-                            frame_out = cv2.cvtColor(frame_out, cv2.COLOR_BGR2RGB)
+                            frame_out = cv2.cvtColor(frame_out, cv2.COLOR_RGB2BGR)
                             out_video.write(frame_out)
                             frame_count += 1
                     buffer_frames = []
@@ -92,7 +87,7 @@ if uploaded_videos:
                 with st.spinner(f'Detecting cats in frame {frame_count}...'):
                     results = model(buffered_frame, conf=0.15)
                     frame_out = results[0].plot()
-                    frame_out = cv2.cvtColor(frame_out, cv2.COLOR_BGR2RGB)
+                    frame_out = cv2.cvtColor(frame_out, cv2.COLOR_RGB2BGR)
                     out_video.write(frame_out)
                     frame_count += 1
             video.release()
