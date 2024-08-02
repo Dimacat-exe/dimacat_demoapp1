@@ -45,7 +45,7 @@ if uploaded_files:
             with st.spinner(f'Detecting cats in image {i + 1}...'):
                 results = model(img, conf=0.15)
                 img_out = results[0].plot()
-                img_out = cv2.cvtColor(img_out, cv2.COLOR_BGR2RGB)
+                img_out = cv2.cvtColor(np.array(img_out), cv2.COLOR_BGR2RGB)
                 img_out = Image.fromarray(img_out)
             st.image(img_out, caption=f'Cats in image {i + 1}', use_column_width=True)
 
@@ -59,6 +59,9 @@ if uploaded_videos:
                 temp_video.write(video_bytes)
                 temp_video_path = temp_video.name
             video = cv2.VideoCapture(temp_video_path)
+            if not video.isOpened():
+                st.error(f"Error: Could not open video {uploaded_video.name}")
+                continue
             frame_count = 0
             fps = video.get(cv2.CAP_PROP_FPS) if video.get(cv2.CAP_PROP_FPS) > 0 else 30
             width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
