@@ -7,7 +7,7 @@ from ultralytics import YOLOv10
 import requests
 
 # Set up model, YOLO, Streamlit
-URL = "https://github.com/Dimacat-exe/dimacat_demoapp1/releases/download/model4/catdt.pt"
+URL = "https://github.com/Dimacat-exe/dimacat_demoapp1/releases/download/model3/catdt.pt"
 SAVE_AS = "catdt.pt"
 resp = requests.get(URL)
 with open(SAVE_AS, "wb") as f:
