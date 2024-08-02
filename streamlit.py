@@ -13,6 +13,7 @@ resp = requests.get(URL)
 with open(SAVE_AS, "wb") as f:
     f.write(resp.content)
 model = YOLOv10(SAVE_AS)
+
 st.set_page_config(
     page_title='Find Cats',
     initial_sidebar_state='expanded',
@@ -37,9 +38,10 @@ if uploaded_files:
             st.image(img, caption=f'Image {i + 1}', use_column_width=True)
         with col2:
             with st.spinner(f'Detecting cats in image {i + 1}...'):
-                results = model(img, conf=0.15)  # Detect cats
-                img_out = results[0].plot()  # Plot results
-                img_out = Image.fromarray(img_out)  # Convert back to PIL Image
+                results = model(img, conf=0.15) 
+                img_out = results[0].plot() 
+                img_out = cv2.cvtColor(img_out, cv2.COLOR_BGR2RGB) 
+                img_out = Image.fromarray(img_out)  
             st.image(img_out, caption=f'Cats in image {i + 1}', use_column_width=True)
 
 # Detect cat in videos
@@ -65,7 +67,7 @@ if uploaded_videos:
                 with st.spinner(f'Detecting cats in frame {frame_count}...'):
                     results = model(frame, conf=0.15)  
                     frame_out = results[0].plot()  
-                    frame_out = cv2.cvtColor(frame_out, cv2.COLOR_BGR2RGB)  
+                    frame_out = cv2.cvtColor(frame_out, cv2.COLOR_BGR2RGB)
                 out_video.write(frame_out)  
                 frame_count += 1
             video.release()
