@@ -5,7 +5,7 @@ import numpy as np
 from io import BytesIO
 from ultralytics import YOLOv10
 import requests
-import some_visualization_library as sv  # Replace with the actual library you're using for visualization
+import supervision as sv
 import random
 
 # Function to download the model
