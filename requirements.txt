@@ -4,3 +4,4 @@ yolov10/.
 huggingface_hub
 gdown
 dill
+supervision
