@@ -18,7 +18,7 @@ st.set_page_config(
     page_title='Find Cats',
     initial_sidebar_state='expanded',
 )
-st.title('Find gái xinh')
+st.title('Tìm gái xinh')
 st.write('Upload your images and videos here')
 uploaded_files = st.file_uploader(
     'Choose up to 50 image files:', type=['jpg', 'jpeg', 'png'], accept_multiple_files=True)
