@@ -13,7 +13,7 @@ def download_model(url, save_as):
         f.write(resp.content)
 
 # Model URL and save path
-URL = "https://github.com/Dimacat-exe/dimacat_demoapp1/releases/download/model6/catdt.pt"
+URL = "https://github.com/Dimacat-exe/dimacat_demoapp1/releases/download/model8/catdt.pt"
 SAVE_AS = "catdt.pt"
 download_model(URL, SAVE_AS)
 model = YOLOv10(SAVE_AS)
