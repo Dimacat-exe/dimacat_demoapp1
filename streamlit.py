@@ -13,10 +13,12 @@ def download_model(url, save_as):
         f.write(resp.content)
 
 # Model URL and save path
-URL = "https://github.com/Dimacat-exe/dimacat_demoapp1/releases/download/model9/best.pt"
+URL = "https://github.com/Dimacat-exe/dimacat_demoapp1/releases/download/model10/best.pt"
 SAVE_AS = "best.pt"
 download_model(URL, SAVE_AS)
-model = YOLOv10(SAVE_AS)
+
+# Load the YOLOv10 model
+model = YOLOv10.from_pretrained(SAVE_AS)
 
 # Set up Streamlit page
 st.set_page_config(
@@ -41,8 +43,10 @@ if uploaded_files:
             st.image(img, caption=f'Image {i + 1}', use_column_width=True)
         with col2:
             with st.spinner(f'Detecting cats in image {i + 1}...'):
-                results = model(img_np, conf=0.15)[0]
+                results = model.predict(img_np, conf=0.15)[0]  # Use predict method
                 detections = sv.Detections.from_ultralytics(results)
+                
+                # Annotate the bounding boxes and labels
                 bounding_box_annotator = sv.BoundingBoxAnnotator()
                 label_annotator = sv.LabelAnnotator()
                 img_out = bounding_box_annotator.annotate(
