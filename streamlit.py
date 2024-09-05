@@ -43,7 +43,7 @@ if uploaded_files:
             st.image(img, caption=f'Image {i + 1}', use_column_width=True)
         with col2:
             with st.spinner(f'Detecting cats in image {i + 1}...'):
-                results = model.predict(img_np, conf=0.15)[0]  # Use predict method
+                results = model(img_np, conf=0.15)[0] 
                 detections = sv.Detections.from_ultralytics(results)
                 
                 # Annotate the bounding boxes and labels
