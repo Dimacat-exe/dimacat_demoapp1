@@ -18,7 +18,7 @@ SAVE_AS = "best.pt"
 download_model(URL, SAVE_AS)
 
 # Load the YOLOv10 model
-model = YOLOv10.from_pretrained(SAVE_AS)
+model = YOLOv10(SAVE_AS)
 
 # Set up Streamlit page
 st.set_page_config(
