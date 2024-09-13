@@ -11,7 +11,7 @@ def download_model(url, save_as):
     with open(save_as, "wb") as file:
         file.write(response.content)
 
-MODEL_URL = ""
+MODEL_URL = "https://github.com/Dimacat-exe/dimacat_demoapp1/releases/download/v1-segmentation/yolov8-segmentation-v1.pt"
 MODEL_PATH = "yolov8-segmentation-v1.pt"
 
 download_model(MODEL_URL, MODEL_PATH)
