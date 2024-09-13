@@ -1,57 +1,54 @@
 import streamlit as st
 from PIL import Image
 import numpy as np
-from io import BytesIO
-from ultralytics import YOLOv10
 import requests
+from ultralytics import YOLO
 import supervision as sv
 
-# Function to download the model
 def download_model(url, save_as):
-    resp = requests.get(url)
-    with open(save_as, "wb") as f:
-        f.write(resp.content)
+    """Download the model from a URL."""
+    response = requests.get(url)
+    with open(save_as, "wb") as file:
+        file.write(response.content)
 
-# Model URL and save path
-URL = "https://github.com/Dimacat-exe/dimacat_demoapp1/releases/download/model10/best.pt"
-SAVE_AS = "best.pt"
-download_model(URL, SAVE_AS)
+MODEL_URL = ""
+MODEL_PATH = "yolov8-segmentation-v1.pt"
 
-# Load the YOLOv10 model
-model = YOLOv10(SAVE_AS)
+download_model(MODEL_URL, MODEL_PATH)
+model = YOLO(MODEL_PATH)
 
-# Set up Streamlit page
-st.set_page_config(
-    page_title='Find Cats',
-    initial_sidebar_state='expanded',
-)
+# Streamlit app setup
+st.set_page_config(page_title='Find Cats', initial_sidebar_state='expanded')
 st.title('Find Cats')
 st.write('Upload your images here')
 
-# File uploader for images
+# Image uploader
 uploaded_files = st.file_uploader(
-    'Choose up to 200 images:', type=['jpg', 'jpeg', 'png'], accept_multiple_files=True
+    'Choose up to 200 images:',
+    type=['jpg', 'jpeg', 'png'],
+    accept_multiple_files=True
 )
 
-# Detect and annotate cats in uploaded images
+# Process each uploaded image
 if uploaded_files:
     col1, col2 = st.columns(2)
-    for i, uploaded_file in enumerate(uploaded_files):
-        img = Image.open(uploaded_file).convert("RGB")
-        img_np = np.array(img)
+    for index, uploaded_file in enumerate(uploaded_files):
+        image = Image.open(uploaded_file).convert("RGB")
+        image_array = np.array(image)
+
         with col1:
-            st.image(img, caption=f'Image {i + 1}', use_column_width=True)
+            st.image(image, caption=f'Image {index + 1}', use_column_width=True)
+
         with col2:
-            with st.spinner(f'Detecting cats in image {i + 1}...'):
-                results = model(img_np)[0] 
+            with st.spinner(f'Detecting cats in image {index + 1}...'):
+                results = model(image_array)[0]
                 detections = sv.Detections.from_ultralytics(results)
-                
-                # Annotate the bounding boxes and labels
-                bounding_box_annotator = sv.BoundingBoxAnnotator()
-                label_annotator = sv.LabelAnnotator()
-                img_out = bounding_box_annotator.annotate(
-                    scene=img_np, detections=detections)
-                img_out = label_annotator.annotate(
-                    scene=img_out, detections=detections)
-                img_out = Image.fromarray(img_out)
-            st.image(img_out, caption=f'Cats in image {i + 1}', use_column_width=True)
+
+                # Annotate segmentation masks
+                segmentation_annotator = sv.SegmentationAnnotator()
+                annotated_image = segmentation_annotator.annotate(
+                    scene=image_array, detections=detections
+                )
+
+                annotated_image = Image.fromarray(annotated_image)
+            st.image(annotated_image, caption=f'Cats in image {index + 1}', use_column_width=True)
