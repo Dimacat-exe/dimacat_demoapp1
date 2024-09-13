@@ -3,4 +3,3 @@ torch
 huggingface_hub
 dill
 ultralytics
-supervision
