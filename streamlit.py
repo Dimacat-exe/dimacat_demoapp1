@@ -25,7 +25,6 @@ uploaded_files = st.file_uploader(
     'Choose up to 200 images:', type=['jpg', 'jpeg', 'png'], accept_multiple_files=True
 )
 if uploaded_files:
-    # Save uploaded files to a temporary directory
     upload_dir = "uploaded_images"
     os.makedirs(upload_dir, exist_ok=True)
     for uploaded_file in uploaded_files:
@@ -33,11 +32,16 @@ if uploaded_files:
         with open(file_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
     OUTPUT_PATH = 'runs/segment/predict'
-    os.makedirs(OUTPUT_PATH, exist_ok=True)
     command = f"yolo task=segment mode=predict model={MODEL_PATH} conf=0.25 source={upload_dir} save=true"
-    subprocess.run(command, shell=True)
-    predicted_images = glob.glob(f'{OUTPUT_PATH}/*.jpg')[:3]
-    for image_path in predicted_images:
-        st.image(Image.open(image_path), caption=os.path.basename(image_path), use_column_width=True)
+    result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if result.returncode == 0:
+        predicted_images = glob.glob(f'{OUTPUT_PATH}/*.jpg')[:3]
+        if predicted_images:
+            for image_path in predicted_images:
+                st.image(Image.open(image_path), caption=os.path.basename(image_path), use_column_width=True)
+        else:
+            st.error("No images were predicted. Check the output path and YOLO setup.")
+    else:
+        st.error("Error running YOLO command. Check your setup.")
 else:
     st.info("Please upload some images to start detecting cats.")
